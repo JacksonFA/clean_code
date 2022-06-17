@@ -21,7 +21,7 @@ export default class LevelRepositoryMemory implements LevelRepository {
         ];
     }
 
-    findByCode(code: string) {
+    async findByCode(code: string): Promise<Level> {
         const level = this.levels.find(level => level.code === code);
         if (!level) throw new Error('Level not fount');
         return level;

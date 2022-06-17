@@ -8,8 +8,8 @@ export default class CancelEnrollment {
         this.enrollmentsRepository = repositoryFactory.createEnrollmentsRepository();
     }
 
-    execute(code: string): void {
-        const enrollment = this.enrollmentsRepository.get(code);
+    async execute(code: string): Promise<void> {
+        const enrollment = await this.enrollmentsRepository.get(code);
         if (!enrollment) throw new Error('Enrollment not found');
         enrollment.status = 'cancelled';
     }

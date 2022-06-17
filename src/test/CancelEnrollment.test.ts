@@ -16,7 +16,7 @@ beforeEach(() => {
 });
 
 test('should cancel enrollment', async () => {
-    enrollStudent.excute(new EnrollStudentInputData({
+    await enrollStudent.excute(new EnrollStudentInputData({
         studentName: 'Maria Carolina Fonseca',
         studentCpf: '755.525.774-26',
         studentBirthDate: '2002-03-12',

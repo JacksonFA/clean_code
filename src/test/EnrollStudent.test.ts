@@ -47,7 +47,7 @@ describe('EnrollStudent Test Suite Case', () => {
             classRoom: 'A',
             installments: 12
         });
-        enrollStudent.excute(enrollmentRequest);
+        await enrollStudent.excute(enrollmentRequest);
         await expect(() => enrollStudent.excute(enrollmentRequest))
             .rejects.toThrow(new Error('Enrollment with duplicated student is not allowed'))
     });

@@ -13,7 +13,7 @@ beforeEach(() => {
 });
 
 test('should get enrollment by code with invoice balance', async () => {
-    enrollStudent.excute(new EnrollStudentInputData({
+    await enrollStudent.excute(new EnrollStudentInputData({
         studentName: 'Maria Carolina Fonseca',
         studentCpf: '755.525.774-26',
         studentBirthDate: '2002-03-12',
@@ -28,7 +28,7 @@ test('should get enrollment by code with invoice balance', async () => {
 });
 
 test('should calculate due date and return status open or overdue for each invoice', async () => {
-    enrollStudent.excute(new EnrollStudentInputData({
+    await enrollStudent.excute(new EnrollStudentInputData({
         studentName: 'Maria Carolina Fonseca',
         studentCpf: '755.525.774-26',
         studentBirthDate: '2002-03-12',
@@ -46,7 +46,7 @@ test('should calculate due date and return status open or overdue for each invoi
 });
 
 test('should calculate penalty and interest', async () => {
-    enrollStudent.excute(new EnrollStudentInputData({
+    await enrollStudent.excute(new EnrollStudentInputData({
         studentName: 'Maria Carolina Fonseca',
         studentCpf: '755.525.774-26',
         studentBirthDate: '2002-03-12',

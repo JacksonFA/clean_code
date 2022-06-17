@@ -33,7 +33,7 @@ export default class ClassRoomRepositoryMemory implements ClassRoomRepository {
         ];
     }
 
-    findByCode(code: string) {
+    async findByCode(code: string): Promise<ClassRoom> {
         const classRoom = this.classRoom.find(classRoom => classRoom.code === code);
         if (!classRoom) throw new Error('Class not fount');
         return classRoom;

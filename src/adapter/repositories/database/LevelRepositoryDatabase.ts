@@ -7,8 +7,9 @@ export default class LevelRepositoryDatabase implements LevelRepository {
     constructor () {
     }
 
-    async findByCode(code: string) {
+    async findByCode(code: string): Promise<Level> {
         const levelData = await ConnectionPool.one("select * from system.level where code = $1", [code]);
+        if (!levelData) throw new Error('Level not fount');
 		return new Level({
 			code: levelData.code,
 			description: levelData.description

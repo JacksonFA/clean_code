@@ -4,19 +4,19 @@ import InvoiceEvent from "../../../domain/entity/InvoiceEvent";
 import Student from "../../../domain/entity/Student";
 import EnrollmentRepository from "../../../domain/repository/EnrollmentRepository";
 import ConnectionPool from "../../../infra/database/ConnectionPool";
-import ClassroomRepositoryDatabase from "./ClassroomRepositoryDatabase";
+import ClassRoomRepositoryDatabase from "./ClassRoomRepositoryDatabase";
 import LevelRepositoryDatabase from "./LevelRepositoryDatabase";
 import ModuleRepositoryDatabase from "./ModuleRepositoryDatabase";
 
 export default class EnrollmentRepositoryDatabase implements EnrollmentRepository {
     levelRepository: LevelRepositoryDatabase;
     moduleRepository: ModuleRepositoryDatabase;
-    classroomRepository: ClassroomRepositoryDatabase;
+    classRoomRepository: ClassRoomRepositoryDatabase;
 
     constructor () {
         this.levelRepository = new LevelRepositoryDatabase();
         this.moduleRepository = new ModuleRepositoryDatabase();
-        this.classroomRepository = new ClassroomRepositoryDatabase();
+        this.classRoomRepository = new ClassRoomRepositoryDatabase();
     }
 
     async get(code: string): Promise<Enrollment> {
@@ -26,8 +26,8 @@ export default class EnrollmentRepositoryDatabase implements EnrollmentRepositor
         const student = new Student(studentData.name, studentData.cpf, studentData.birth_date);
         const level = await this.levelRepository.findByCode(enrollmentData.level);
         const module = await this.moduleRepository.findByCode(enrollmentData.level, enrollmentData.module);
-        const classroom = await this.classroomRepository.findByCode(enrollmentData.classroom);
-        const enrollment = new Enrollment(student, level, module, classroom, enrollmentData.issue_date, enrollmentData.sequence, enrollmentData.installments, enrollmentData.status);
+        const classRoom = await this.classRoomRepository.findByCode(enrollmentData.classRoom);
+        const enrollment = new Enrollment(student, level, module, classRoom, enrollmentData.issue_date, enrollmentData.sequence, enrollmentData.installments);
         const invoicesData = await ConnectionPool.query("select * from system.invoice where enrollment = $1", [code]);
         const invoices = [];
         for (const invoiceData of invoicesData) {
@@ -46,7 +46,7 @@ export default class EnrollmentRepositoryDatabase implements EnrollmentRepositor
     }
 
     async save(enrollment: Enrollment): Promise<void> {
-        const enrollmentData = await ConnectionPool.one("insert into system.enrollment (code, sequence, level, module, classroom, student, installments, issue_date, status) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *", [enrollment.code.value, enrollment.sequence, enrollment.level.code, enrollment.module.code, enrollment.classroom.code, enrollment.student.cpf.value, enrollment.installments, enrollment.issueDate, enrollment.status]);
+        const enrollmentData = await ConnectionPool.one("insert into system.enrollment (code, sequence, level, module, classRoom, student, installments, issue_date, status) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *", [enrollment.code.value, enrollment.sequence, enrollment.level.code, enrollment.module.code, enrollment.classRoom.code, enrollment.student.cpf.value, enrollment.installments, enrollment.issueDate, enrollment.status]);
         const studentData = await ConnectionPool.one("insert into system.student (name, cpf, birth_date) values ($1, $2, $3) returning *", [enrollment.student.name.value, enrollment.student.cpf.value, enrollment.student.birthDate]);
         for (const invoice of enrollment.invoices) {
             await ConnectionPool.one("insert into system.invoice (enrollment, month, year, due_date, amount) values ($1, $2, $3, $4, $5) returning *", [enrollment.code.value, invoice.month, invoice.year, invoice.dueDate, invoice.amount]);
@@ -62,8 +62,8 @@ export default class EnrollmentRepositoryDatabase implements EnrollmentRepositor
 		}
     }
 
-    async findAllByClassroom(level: string, module: string, classroom: string): Promise<Enrollment[]> {
-        const enrollmentsData = await ConnectionPool.query("select * from system.enrollment where level = $1 and module = $2 and classroom = $3", [level, module, classroom]);
+    async findAllByClassRoom(level: string, module: string, classRoom: string): Promise<Enrollment[]> {
+        const enrollmentsData = await ConnectionPool.query("select * from system.enrollment where level = $1 and module = $2 and classRoom = $3", [level, module, classRoom]);
 		const enrollments = [];
 		for (const enrollmentData of enrollmentsData) {
 			const enrollment = await this.get(enrollmentData.code);

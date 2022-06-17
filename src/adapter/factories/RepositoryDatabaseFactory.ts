@@ -1,13 +1,12 @@
 import RepositoryAbstractFactory from "../../domain/factory/RepositoryAbstractFactory";
-import ClassroomRepositoryDatabase from "../repositories/database/ClassroomRepositoryDatabase";
+import ClassRoomRepositoryDatabase from "../repositories/database/ClassRoomRepositoryDatabase";
 import EnrollmentRepositoryDatabase from "../repositories/database/EnrollmentRepositoryDatabase";
 import LevelRepositoryDatabase from "../repositories/database/LevelRepositoryDatabase";
 import ModuleRepositoryDatabase from "../repositories/database/ModuleRepositoryDatabase";
 
 export default class RepositoryDatabaseFactory implements RepositoryAbstractFactory {
 
-    constructor () {
-    }
+    constructor () {}
 
     createLevelRepository () {
         return new LevelRepositoryDatabase();
@@ -17,11 +16,11 @@ export default class RepositoryDatabaseFactory implements RepositoryAbstractFact
         return new ModuleRepositoryDatabase();
     }
 
-    createClassroomRepository () {
-        return new ClassroomRepositoryDatabase();
+    createClassRoomRepository () {
+        return new ClassRoomRepositoryDatabase();
     }
 
-    createEnrollmentRepository () {
+    createEnrollmentsRepository () {
         return new EnrollmentRepositoryDatabase();
     }
 }
