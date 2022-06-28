@@ -27,7 +27,7 @@ export default class EnrollmentRepositoryDatabase implements EnrollmentRepositor
         const level = await this.levelRepository.findByCode(enrollmentData.level);
         const module = await this.moduleRepository.findByCode(enrollmentData.level, enrollmentData.module);
         const classRoom = await this.classRoomRepository.findByCode(enrollmentData.classRoom);
-        const enrollment = new Enrollment(student, level, module, classRoom, enrollmentData.issue_date, enrollmentData.sequence, enrollmentData.installments);
+        const enrollment = new Enrollment(student, level, module, classRoom, enrollmentData.issue_date, enrollmentData.sequence, enrollmentData.installments, enrollmentData.status);
         const invoicesData = await ConnectionPool.query("select * from system.invoice where enrollment = $1", [code]);
         const invoices = [];
         for (const invoiceData of invoicesData) {
@@ -46,8 +46,8 @@ export default class EnrollmentRepositoryDatabase implements EnrollmentRepositor
     }
 
     async save(enrollment: Enrollment): Promise<void> {
-        const enrollmentData = await ConnectionPool.one("insert into system.enrollment (code, sequence, level, module, classRoom, student, installments, issue_date, status) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *", [enrollment.code.value, enrollment.sequence, enrollment.level.code, enrollment.module.code, enrollment.classRoom.code, enrollment.student.cpf.value, enrollment.installments, enrollment.issueDate, enrollment.status]);
-        const studentData = await ConnectionPool.one("insert into system.student (name, cpf, birth_date) values ($1, $2, $3) returning *", [enrollment.student.name.value, enrollment.student.cpf.value, enrollment.student.birthDate]);
+        await ConnectionPool.one("insert into system.enrollment (code, sequence, level, module, classRoom, student, installments, issue_date, status) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *", [enrollment.code.value, enrollment.sequence, enrollment.level.code, enrollment.module.code, enrollment.classRoom.code, enrollment.student.cpf.value, enrollment.installments, enrollment.issueDate, enrollment.status]);
+        await ConnectionPool.one("insert into system.student (name, cpf, birth_date) values ($1, $2, $3) returning *", [enrollment.student.name.value, enrollment.student.cpf.value, enrollment.student.birthDate]);
         for (const invoice of enrollment.invoices) {
             await ConnectionPool.one("insert into system.invoice (enrollment, month, year, due_date, amount) values ($1, $2, $3, $4, $5) returning *", [enrollment.code.value, invoice.month, invoice.year, invoice.dueDate, invoice.amount]);
         }
